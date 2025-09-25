@@ -1,2 +1,4 @@
 # wisp
 Code and dataset for the EMNLP paper "so much depends / upon / a whitespace: Why Whitespace Matters for Poets and LLMs"
+
+(will be updated by Sep 30th, 2025)
