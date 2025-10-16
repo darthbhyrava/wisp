@@ -5,103 +5,11 @@ Code, dataset, and dashboard for the EMNLP paper **"so much depends / upon / a w
 </p>
 
 
-## I. Dataset: 2,857 Whitespace-Preserved Public Domain Poems
+## I. Public Domain Poems Dataset
 
-This dataset includes 2,857 poems from the [Poetry Foundation](https://www.poetryfoundation.org/), which were processed to preserve poetic whitespace---a crucial but often-overlooked aspect of poetry.
+`1-public_domain_poems` contains 2,857 whitespace-preserved public domain poems from the [Poetry Foundation](https://www.poetryfoundation.org/). The poems were selected based on their public domain status (author death year <= 1929) and processed to preserve poetic whitespace using our custom parsers for extracting HTML from webpages, and the [`resiliparse`](https://resiliparse.chatnoir.eu/en/stable/) HTML parser.
 
-To retain original formatting, the poems were converted from HTML using [`resiliparse`](https://resiliparse.chatnoir.eu/en/stable/), an HTML parser that supports precise whitespace preservation (e.g., line breaks, indentation, em-spaces, non-breaking spaces, and more).
-
-#### Inclusion Criteria
-
-Poems were selected based on their **public domain status**. In the U.S., as of 2025, texts published in 1929 or earlier have entered the public domain. We thus used a a combination of factors:
-- Author death year (<= 1929)
-- Presence of “public domain” language in copyright metadata
-- Publication year (<= 1929)
-
-#### About the Dataset
-
-This dataset includes 2.8k poems from the [Poetry Foundation](https://www.poetryfoundation.org/), which were processed to preserve poetic whitespace---a crucial but often-overlooked aspect of poetry. 
-
-To retain original formatting, the poems were converted from HTML using [`resiliparse`](https://resiliparse.chatnoir.eu/en/stable/), an HTML parser that supports precise whitespace preservation (e.g., line breaks, indentation, em-spaces, non-breaking spaces, and more).
-
-Each row in the dataset represents a single poem and includes the following metadata:
-
-- **`poem_url`**  
-  The full URL of the poem on the Poetry Foundation website.
-
-- **`poem_slug`**  
-  A URL-safe identifier for the poem (e.g., `the-red-wheelbarrow`), typically derived from the poem title.
-
-- **`poem_name`**  
-  The full title of the poem, as displayed on the Poetry Foundation website.
-
-- **`poem_type`**  
-  A label indicating the genre or format of the work (e.g., `"Prose"`, `"Verse"`, `"Visual"`).
-
-- **`poem_text`**  
-  The whitespace-preserved full text of the poem, extracted from HTML using [`resiliparse`](https://github.com/tsproisl/resiliparsehttps://resiliparse.chatnoir.eu/en/stable/). Includes line breaks, indentation, non-breaking spaces, and other whitespace variants relevant to poetry.
-
-- **`poem_copyright_and_source`**  
-  Copyright information and original publication/source metadata. Used to determine public domain status when combined with author death year and copyright year.
-
-- **`poem_categories`**  
-  Tags or categories assigned by the Poetry Foundation, which may be subjects or forms (e.g., "nature", "love", "sonnet").
-
-- **`poet_name`**  
-  The full name of the poet.
-
-- **`poet_pseudonym`**  
-  An alternate name used by the poet, if listed (may be blank).
-
-- **`poet_slug`**  
-  A URL-safe version of the poet's name (e.g., `emily-dickinson`).
-
-- **`poet_url`**  
-  The full URL of the poet’s profile page on the Poetry Foundation website.
-
-- **`poet_birth_year`**  
-  The birth year of the poet, as listed on the Poetry Foundation site.
-
-- **`poet_death_year`**  
-  The death year of the poet, as listed on the Poetry Foundation site.
-
-- **`birth_year_from_exp`**  
-  An extracted birth year, parsed programmatically from textual metadata.
-
-- **`death_year_from_exp`**  
-  An extracted death year, parsed programmatically from textual metadata. Used to help assess public domain status.
-
-- **`poet_categories`**  
-  Tags or labels applied to the poet (e.g., "Modern", "England," Victorian", "Renaissance").
-
-- **`poem_audio_id`**  
-  An identifier for the audio recording of the poem (if available).
-
-- **`audio_slug`**  
-  A URL-safe identifier for the audio file (if available).
-
-- **`audio_info`**  
-  Information about the audio recording, such as narrator.
-
-- **`issue_id`**  
-  The internal Poetry Foundation issue identifier (if the poem appeared in *Poetry* magazine).
-
-- **`issue_month_year`**  
-  The month and year the poem appeared in *Poetry* magazine, if applicable.
-
-
-We also share a [Google spreadsheet](https://docs.google.com/spreadsheets/d/1mr6J3EJKkhMU-u__WbzTftUzLuTgz9lhu5S4uGL7Lcs/edit?usp=sharing) version of this data.
-
-#### Individual Poem Files in `.txt` and `.html` Formats
-
-In addition to the CSV dataset, we provide the individual poem files in two formatting-preserved versions:
-
-- **`poem_texts_resiliparse.zip`**: Contains 2,857 plain text files (`.txt`), one per poem, with whitespace and formatting preserved from the original HTMLs using [`resiliparse`](https://resiliparse.chatnoir.eu/en/stable/). These files attempt to maintain the original line breaks, indentation, and spacing from the Poetry Foundation website (look at WISP-Bench for more details).
-
-- **`poem_htmls.zip`**: Contains 2,857 HTML files (`.html`), one per poem, preserving the original HTML structure and formatting from the Poetry Foundation website wherever possible. These files retain all typographic elements including text formatting, line breaks, indentation, em-spaces, and other HTML-encoded whitespace.
-
-Both versions correspond exactly to the poems listed in `public_domain_shortlist.txt` and provide researchers with access to the full formatting details that are crucial for analyzing poetic structure and whitespace usage.
-
+Please see the [1-public_domain_poems/README.md](./1-public_domain_poems/README.md) for more details about the dataset, including inclusion criteria, metadata fields, and explanation of the individual poem files in `.txt` and `.html` formats.
 
 ## II. Whitespace Patterns in Poetry: [poetry.darthbhyrava.com](https://poetry.darthbhyrava.com)
 
@@ -113,8 +21,25 @@ Explore whitespace patterns in poetry across 19,454 poems by 4331 poets from [Th
 
 The dashboard allows you to visualize and analyze how poets use whitespace as a literary device, offering insights into the spatial dimensions of poetic expression. Browse through different poems, categories of poets, compare poet styles, and discover how formatting contributes to meaning and aesthetic effect.
 
+## III. Poetry Screenshotter
 
-## III. Citation
+A tool for capturing specific divs from HTML webpages to independent images. We use this to get ground truth images of poems from Poetry Foundation webpages. Please see the [2-poetry-screenshotter/README.md](./2-poetry-screenshotter/README.md) for more details about the package, including installation instructions and usage examples. Basic Usage after installation:
+
+```bash
+$ poetry-screenshotter convert poems/an-ode-to-ben-jonson.html -o poems/an-ode-to-ben-jonson.png 
+```
+
+## IV. WISP-Bench: Evaluating Whitespace Preservation Fidelity across Linearization methods.
+
+When you convert a formatted whitespace-rich source text (like a poem) from HTML/Image/PDF/any-other-format to plain text, how can you quantify the quality of whitespace preservation fidelity? We propose WISP-Bench, a benchmark for evaluating whitespace preservation fidelity across different linearization methods.
+
+<p align="center">
+    <img src="./assets/2wispbench.png" alt="Prodigy Annotation Task 2" width="750"/>
+</p>
+
+WISP-Bench consists of a three-tiered set of pass-or-fail unit-tests that evaluate whitespace preservation across four key dimensions: line breaks, prefix spacing (indentation), internal spacing (between words), and vertical spacing (blank lines). The benchmark includes Prodigy annotation recipes for manual evaluation, tools for generating text from images using multimodal LLM OCR, and comprehensive scoring and visualization scripts. Please see [3-wisp-bench/README.md](./3-wisp-bench/README.md) for detailed setup instructions, annotation guidelines, and usage examples.
+
+## V. Citation
 
 This dataset supports the analysis in our paper:  
 > “Whitespace.”
