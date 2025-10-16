@@ -31,8 +31,10 @@ def create_shortlist(mapping: Dict[str, List[str]],
     Returns:
         List of selected poem slugs
     """
+    if not mapping:
+        print("Warning: The mapping file is empty; returning empty shortlist.")
+        return []
     selected = set()
-    
     # requirements mapping
     requirements = {
         'LINE_BREAKS': line_breaks,
@@ -41,11 +43,27 @@ def create_shortlist(mapping: Dict[str, List[str]],
         'INTERNAL': internal,
         'CONCRETE': concrete
     }
-    
+    # check which categories are actually available in the mapping
+    available_categories = set(mapping.keys())
+    required_categories = set(requirements.keys())
+    missing_categories = required_categories - available_categories
+    if missing_categories:
+        print(f"Warning: The following categories are missing from the mapping: {sorted(missing_categories)}")
+        print(f"Available categories: {sorted(available_categories)}")
+        # remove missing categories from requirements
+        for cat in missing_categories:
+            del requirements[cat]
+    # check if we have any categories left to work with
+    if not requirements:
+        print("Warning: No valid categories found in mapping, returning all available poems")
+        all_poems = set()
+        for poems in mapping.values():
+            all_poems.update(poems)
+        return sorted(list(all_poems))
     # track how many we've selected from each category
     category_counts = {cat: 0 for cat in requirements.keys()}
-    # convert lists to sets for easier operations
-    category_sets = {cat: set(poems) for cat, poems in mapping.items()}
+    # convert lists to sets for easier operations (only for available categories)
+    category_sets = {cat: set(poems) for cat, poems in mapping.items() if cat in requirements}
     # first pass: select poems that appear in multiple categories to maximize efficiency
     all_poems = set()
     for poems in mapping.values():
@@ -64,7 +82,8 @@ def create_shortlist(mapping: Dict[str, List[str]],
         # check which unfulfilled requirements this poem can help with
         helpful_categories = []
         for cat, req_count in requirements.items():
-            if (poem in category_sets[cat] and 
+            if (cat in category_sets and 
+                poem in category_sets[cat] and 
                 category_counts[cat] < req_count):
                 helpful_categories.append(cat)
         # if this poem helps with any unfulfilled requirements, select it
@@ -74,6 +93,9 @@ def create_shortlist(mapping: Dict[str, List[str]],
                 category_counts[cat] += 1
     # second pass: fill any remaining requirements
     for category, required_count in requirements.items():
+        if category not in category_sets:
+            # skip categories that don't exist in the mapping
+            continue
         if category_counts[category] < required_count:
             # find poems in this category that aren't already selected
             available = category_sets[category] - selected
@@ -93,6 +115,12 @@ def print_statistics(shortlist: List[str], mapping: Dict[str, List[str]]):
     for category, poems in mapping.items():
         count = sum(1 for poem in shortlist if poem in poems)
         print(f"  {category}: {count} poems")
+    # show which expected categories are missing
+    expected_categories = {'LINE_BREAKS', 'VERTICAL', 'PREFIX', 'INTERNAL', 'CONCRETE'}
+    available_categories = set(mapping.keys())
+    missing_categories = expected_categories - available_categories
+    if missing_categories:
+        print(f"\nMissing expected categories: {sorted(missing_categories)}")
     print(f"\nFirst 10 poems in shortlist:")
     for i, poem in enumerate(shortlist[:10]):
         print(f"  {i+1}. {poem}")

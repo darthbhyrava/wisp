@@ -4,7 +4,7 @@ import os
 from collections import defaultdict
 from pathlib import Path
 
-def extract_wisp_mapping(annotations_file, output_dir="wisp_mapping"):
+def extract_wisp_mapping(annotations_file, output_dir="."):
     annotations = []
     with open(annotations_file, 'r') as f:
         for line in f:

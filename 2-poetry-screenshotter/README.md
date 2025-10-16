@@ -13,8 +13,11 @@ poetry_screenshotter/
 ├── cli.py           # Command-line interface with batch processing
 ├── api.py           # FastAPI REST endpoints
 ├── exceptions.py    # Custom error handling classes
-└── poems/           # Sample Poetry Foundation HTML files
+└── poems/           # One parsed (not original) Poetry Foundation HTML file
 ```
+
+The poem we use as an example here is [*"An Ode to Ben Jonson"*](https://www.poetryfoundation.org/poems/47331/an-ode-to-ben-jonson), written by [Robert Herrick](https://www.poetryfoundation.org/poets/robert-herrick) (1591—1674) for his literary "father". 
+
 
 ### Installation Requirements
 

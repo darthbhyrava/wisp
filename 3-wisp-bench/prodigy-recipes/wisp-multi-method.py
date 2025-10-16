@@ -10,24 +10,27 @@ from typing import List, Optional, Dict, Any
 # define sub-labels for each WISP label unit-test
 WISP_SUBLABELS = {
     "LINE_BREAKS": [
-        {"id": "line_breaks_presence", "text": "Line Breaks Presence: Does the text capture line breaks where they should be?"}
+        {"id": "line_breaks_presence", "text": "Line Breaks Exact: Does the text capture line breaks exactly where they should be?"}
     ],
     "PREFIX": [
-        {"id": "prefix_presence", "text": "Prefix Presence: Is indentation preserved at all?"},
+        {"id": "prefix_presence", "text": "Prefix Presence: Is any indentation preserved at all?"},
         {"id": "prefix_fuzzy", "text": "Prefix Fuzzy: Are relative indentation levels preserved?"},
         {"id": "prefix_exact", "text": "Prefix Exact: Are exact indentation levels preserved?"}
     ],
     "INTERNAL": [
-        {"id": "internal_presence", "text": "Internal Presence: Is extra spacing between words preserved?"},
+        {"id": "internal_presence", "text": "Internal Presence: Is any extra spacing between words preserved at all?"},
         {"id": "internal_fuzzy", "text": "Internal Fuzzy: Are relative internal spacing levels preserved?"},
         {"id": "internal_exact", "text": "Internal Exact: Are exact internal spacing amounts preserved?"}
     ],
     "VERTICAL": [
-        {"id": "vertical_presence", "text": "Vertical Presence: Is vertical spacing (>1 newline) preserved?"},
+        {"id": "vertical_presence", "text": "Vertical Presence: Is any vertical spacing (>1 newline) preserved at all?"},
         {"id": "vertical_fuzzy", "text": "Vertical Fuzzy: Are relative vertical spacing levels preserved?"},
         {"id": "vertical_exact", "text": "Vertical Exact: Are exact vertical spacing amounts preserved?"}
     ]
 }
+
+# add methods using the "_poem_text.txt" naming
+METHODS_WITH_POEM_TEXT = {"justext", "wispify", "resiliparse", "trafilatura"}
 
 def load_wisp_mapping(mapping_file: str) -> Dict[str, List[str]]:
     # load WISP label to slug mapping
@@ -37,6 +40,11 @@ def load_wisp_mapping(mapping_file: str) -> Dict[str, List[str]]:
 def load_shortlist(shortlist_file: str) -> List[str]:
     # load list of poem slugs to process
     with open(shortlist_file, 'r') as f:
+        return [line.strip() for line in f if line.strip()]
+
+def load_method_order(order_file: str) -> List[str]:
+    # load ordered list of methods to process
+    with open(order_file, 'r') as f:
         return [line.strip() for line in f if line.strip()]
 
 def get_labels_for_slug(slug: str, wisp_mapping: Dict[str, List[str]]) -> List[str]:
@@ -49,7 +57,11 @@ def get_labels_for_slug(slug: str, wisp_mapping: Dict[str, List[str]]) -> List[s
 
 def get_combined_sublabels(labels: List[str]) -> List[Dict[str, str]]:
     # combine sublabels from all relevant WISP labels
-    combined = []
+    # add universal OCR error option for all poems first
+    combined = [{
+        "id": "ocr_error", 
+        "text": "OCR Error Present: Does the text file fail to accurately capture any of the textual content from the image?"
+    }]
     for label in labels:
         if label in WISP_SUBLABELS:
             combined.extend(WISP_SUBLABELS[label])
@@ -71,80 +83,112 @@ def load_text_file(text_path: str) -> str:
         return f"[Text file not found: {text_path}]"
 
 @prodigy.recipe(
-    "wisp.sublabel",
+    "wisp.multi_sublabel",
     dataset=("Dataset to save annotations", "positional", None, str),
     mapping_file=("Path to WISP mapping JSON file", "positional", None, str),
     shortlist_file=("Path to shortlist.txt file", "positional", None, str),
     images_dir=("Directory containing poem images", "positional", None, str),
     texts_dir=("Directory containing poem texts", "positional", None, str),
-    cat_dir=("Category subdirectory in texts_dir", "positional", None, str),
+    order_file=("Path to order.txt file listing methods", "positional", None, str),
     exclude=("Datasets to exclude", "option", "e", split_string),
+    group_by_poem=("Group tasks by poem (default: group by method)", "flag", "p", bool),
 )
-def wisp_sublabel_annotation(
+def wisp_multi_sublabel_annotation(
     dataset: str,
     mapping_file: str,
     shortlist_file: str,
     images_dir: str,
     texts_dir: str,
-    cat_dir: str,
+    order_file: str,
     exclude: Optional[List[str]] = None,
+    group_by_poem: bool = False,
 ):
     """
-    A custom prodigy recipe for WISP sub-label annotation comparing images to linearized text.
+    A custom prodigy recipe for WISP sub-label annotation comparing images to linearized text
+    across multiple linearization methods.
     Shows image and text side-by-side with sub-label options based on detected WISP elements.
-    Uses shortlist.txt to determine which poems to process and automatically finds relevant WISP labels.
+    Uses shortlist.txt to determine which poems to process and order.txt for method ordering.
     """
-    # load WISP mapping and shortlist
+    
+    # load WISP mapping, shortlist, and method order
     wisp_mapping = load_wisp_mapping(mapping_file)
     shortlist_slugs = load_shortlist(shortlist_file)
+    methods = load_method_order(order_file)
+    
     def create_stream():
         """Generate annotation tasks"""
-        for slug in shortlist_slugs:
-            # find which WISP labels this slug belongs to
-            labels = get_labels_for_slug(slug, wisp_mapping)
-            if not labels:
-                print(f"Warning: No WISP labels found for slug {slug}")
-                continue
-            # get combined sublabels for all relevant WISP labels
-            combined_sublabels = get_combined_sublabels(labels)
-            if not combined_sublabels:
-                print(f"Warning: No sublabels found for slug {slug} with labels {labels}")
-                continue
-            # construct file paths
-            image_path = os.path.join(images_dir, f"{slug}.png")
-            text_path = os.path.join(texts_dir, cat_dir, f"{slug}_poem_text.txt")
-            # check if files exist
-            if not os.path.exists(image_path):
-                print(f"Warning: Image not found: {image_path}")
-                continue
-            if not os.path.exists(text_path):
-                print(f"Warning: Text file not found: {text_path}")
-                continue
-            # load image and text
-            image_b64 = image_to_base64(image_path)
-            text_content = load_text_file(text_path)
+        
+        if group_by_poem:
+            # Group by poem: poem1_method1, poem1_method2, ..., poem1_methodN, poem2_method1, ...
+            for slug in shortlist_slugs:
+                for method in methods:
+                    task = create_task_for_slug_method(slug, method)
+                    if task:
+                        yield task
+        else:
+            # Group by method: poem1_method1, poem2_method1, ..., poemN_method1, poem1_method2, ...
+            for method in methods:
+                for slug in shortlist_slugs:
+                    task = create_task_for_slug_method(slug, method)
+                    if task:
+                        yield task
+    
+    def create_task_for_slug_method(slug: str, method: str):
+        """Create a single annotation task for a slug-method combination"""
+        # find which WISP labels this slug belongs to
+        labels = get_labels_for_slug(slug, wisp_mapping)
+        
+        if not labels:
+            print(f"Warning: No WISP labels found for slug {slug}")
+            return None
+        
+        # get combined sublabels for all relevant WISP labels
+        combined_sublabels = get_combined_sublabels(labels)
+        if not combined_sublabels:
+            print(f"Warning: No sublabels found for slug {slug} with labels {labels}")
+            return None
+        
+        # construct file paths
+        image_path = os.path.join(images_dir, f"{slug}.png")
+        # choose text file name based on method/source folder
+        text_filename = f"{slug}_poem_text.txt" if method.lower() in METHODS_WITH_POEM_TEXT else f"{slug}.txt"
+        text_path = os.path.join(texts_dir, method, text_filename)
 
-            # create task (provide raw data only; template handles layout)
-            task = {
-                "image_b64": image_b64,  # transient – removed before DB
-                "poem_text": text_content,  # transient – removed before DB
-                "wisp_labels": labels,  # transient – removed before DB
-                "options": combined_sublabels,
-                # 'text' is required by the choice view even if we render custom HTML.
-                # Use the filename (slug) plus labels for hashing / display consistency.
-                # Use slug as text so tasks get unique hashes (previous constant caused deduplication)
-                "text": slug,
-                "filename": slug,
-                # Store original image path for persistence / review if base64 removed later
-                "image": image_path,
-                "meta": {
-                    "image_path": image_path,
-                    "text_path": text_path,
-                    "wisp_labels": labels,
-                    "category": cat_dir
-                }
+        # check if files exist
+        if not os.path.exists(image_path):
+            print(f"Warning: Image not found: {image_path}")
+            return None
+            
+        if not os.path.exists(text_path):
+            print(f"Warning: Text file not found: {text_path} - skipping")
+            return None
+
+        # load image and text
+        image_b64 = image_to_base64(image_path)
+        text_content = load_text_file(text_path)
+        
+        # create task (provide raw data only; template handles layout)
+        task = {
+            "image_b64": image_b64,  # transient – removed before DB
+            "poem_text": text_content,  # transient – removed before DB
+            "wisp_labels": labels,  # transient – removed before DB
+            "options": combined_sublabels,
+            # use method_slug format for unique task hashing
+            "text": f"{method}_{slug}",
+            "filename": slug,
+            "method": method,
+            # store original image path for persistence / review if base64 removed later
+            "image": image_path,
+            "meta": {
+                "image_path": image_path,
+                "text_path": text_path,
+                "wisp_labels": labels,
+                "category": method,  # keep for backward compatibility
+                "method": method,
+                "slug": slug
             }
-            yield task
+        }
+        return task
 
     def before_db(examples):
         """Strip transient large fields to minimize DB size."""
@@ -157,7 +201,7 @@ def wisp_sublabel_annotation(
     return {
         "dataset": dataset,
         "stream": create_stream(),
-                "view_id": "blocks",
+        "view_id": "blocks",
         "exclude": exclude,
         "before_db": before_db,
         "config": {
@@ -174,7 +218,7 @@ def wisp_sublabel_annotation(
                     </div>
                     <!-- 50% text column -->
                     <div style='flex:1 1 50%; max-width:50%; min-width:0;'>
-                        <h3 style='margin-top:0;'>Text ({{meta.category}})</h3>
+                        <h3 style='margin-top:0;'>Text ({{method}})</h3>
                     <pre id='text-container' style='border:1px solid #ccc; padding:10px; margin:0; background:white; color:black; font-family:monospace; white-space:pre; overflow-x:auto; overflow-y:auto; box-sizing:border-box; width:100%; text-align:left;'>{{poem_text}}</pre>
                     </div>
                 </div>
