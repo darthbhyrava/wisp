@@ -39,12 +39,7 @@ When you convert a formatted whitespace-rich source text (like a poem) from HTML
 
 WISP-Bench consists of a three-tiered set of pass-or-fail unit-tests that evaluate whitespace preservation across four key dimensions: line breaks, prefix spacing (indentation), internal spacing (between words), and vertical spacing (blank lines). The benchmark includes Prodigy annotation recipes for manual evaluation, tools for generating text from images using multimodal LLM OCR, and comprehensive scoring and visualization scripts. Please see [3-wisp-bench/README.md](./3-wisp-bench/README.md) for detailed setup instructions, annotation guidelines, and usage examples.
 
-
-
-
-
-
-## IV. Citation
+## V. Citation
 
 This dataset supports the analysis in our paper:  
 > “Whitespace.”
