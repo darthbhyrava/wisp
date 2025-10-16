@@ -5,9 +5,9 @@ Code, dataset, and dashboard for the EMNLP paper **"so much depends / upon / a w
 </p>
 
 
-## I. Dataset: 2.8k Whitespace-Preserved Public Domain Poems
+## I. Dataset: 2,857 Whitespace-Preserved Public Domain Poems
 
-This dataset includes 2.8k poems from the [Poetry Foundation](https://www.poetryfoundation.org/), which were processed to preserve poetic whitespace---a crucial but often-overlooked aspect of poetry.
+This dataset includes 2,857 poems from the [Poetry Foundation](https://www.poetryfoundation.org/), which were processed to preserve poetic whitespace---a crucial but often-overlooked aspect of poetry.
 
 To retain original formatting, the poems were converted from HTML using [`resiliparse`](https://resiliparse.chatnoir.eu/en/stable/), an HTML parser that supports precise whitespace preservation (e.g., line breaks, indentation, em-spaces, non-breaking spaces, and more).
 
@@ -91,6 +91,16 @@ Each row in the dataset represents a single poem and includes the following meta
 
 
 We also share a [Google spreadsheet](https://docs.google.com/spreadsheets/d/1mr6J3EJKkhMU-u__WbzTftUzLuTgz9lhu5S4uGL7Lcs/edit?usp=sharing) version of this data.
+
+#### Individual Poem Files in `.txt` and `.html` Formats
+
+In addition to the CSV dataset, we provide the individual poem files in two formatting-preserved versions:
+
+- **`poem_texts_resiliparse.zip`**: Contains 2,857 plain text files (`.txt`), one per poem, with whitespace and formatting preserved from the original HTMLs using [`resiliparse`](https://resiliparse.chatnoir.eu/en/stable/). These files attempt to maintain the original line breaks, indentation, and spacing from the Poetry Foundation website (look at WISP-Bench for more details).
+
+- **`poem_htmls.zip`**: Contains 2,857 HTML files (`.html`), one per poem, preserving the original HTML structure and formatting from the Poetry Foundation website wherever possible. These files retain all typographic elements including text formatting, line breaks, indentation, em-spaces, and other HTML-encoded whitespace.
+
+Both versions correspond exactly to the poems listed in `public_domain_shortlist.txt` and provide researchers with access to the full formatting details that are crucial for analyzing poetic structure and whitespace usage.
 
 
 ## II. Whitespace Patterns in Poetry: [poetry.darthbhyrava.com](https://poetry.darthbhyrava.com)
