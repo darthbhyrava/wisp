@@ -32,7 +32,7 @@ Each row in the dataset represents a single poem and includes the following meta
   A label indicating the genre or format of the work (e.g., `"Prose"`, `"Verse"`, `"Visual"`).
 
 - **`poem_text`**  
-  The whitespace-preserved full text of the poem, extracted from HTML using [`resiliparse`](https://github.com/tsproisl/resiliparsehttps://resiliparse.chatnoir.eu/en/stable/). Includes line breaks, indentation, non-breaking spaces, and other whitespace variants relevant to poetry.
+  The whitespace-preserved full text of the poem, extracted from HTML using [`resiliparse`](https://resiliparse.chatnoir.eu/en/stable/). Includes line breaks, indentation, non-breaking spaces, and other whitespace variants relevant to poetry.
 
 - **`poem_copyright_and_source`**  
   Copyright information and original publication/source metadata. Used to determine public domain status when combined with author death year and copyright year.
