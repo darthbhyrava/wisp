@@ -126,10 +126,7 @@ curl -X POST "http://localhost:8000/batch-convert"
 ## Browser Installation Notes
 
 ### Automatic Installation
-```bashERROR: Could not find a version that satisfies the requirement poetry-screenshotter (from versions: none)
-
-[notice] A new release of pip is available: 25.0.1 -> 25.2
-[notice] To update, run: pip install --upgrade pip
+```bash
 # Install all browsers
 playwright install
 
