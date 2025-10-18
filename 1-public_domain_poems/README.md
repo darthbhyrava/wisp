@@ -2,7 +2,7 @@
 
 This dataset includes 2,857 poems from the [Poetry Foundation](https://www.poetryfoundation.org/), which were processed to preserve poetic whitespace---a crucial but often-overlooked aspect of poetry.
 
-To retain original formatting, the poems were converted from HTML using [`resiliparse`](https://resiliparse.chatnoir.eu/en/stable/), an HTML parser that supports precise whitespace preservation (e.g., line breaks, indentation, em-spaces, non-breaking spaces, and more).
+To retain original formatting, the poems were linearized with [`resiliparse`](https://resiliparse.chatnoir.eu/en/stable/), an HTML parser that supports precise whitespace preservation (e.g., line breaks, indentation, em-spaces, non-breaking spaces, and more).
 
 ## Inclusion Criteria
 
@@ -12,10 +12,6 @@ Poems were selected based on their **public domain status**. In the U.S., as of 
 - Publication year (<= 1929)
 
 ## About the Dataset
-
-This dataset includes 2.8k poems from the [Poetry Foundation](https://www.poetryfoundation.org/), which were processed to preserve poetic whitespace---a crucial but often-overlooked aspect of poetry. 
-
-To retain original formatting, the poems were converted from HTML using [`resiliparse`](https://resiliparse.chatnoir.eu/en/stable/), an HTML parser that supports precise whitespace preservation (e.g., line breaks, indentation, em-spaces, non-breaking spaces, and more).
 
 Each row in the dataset represents a single poem and includes the following metadata:
 
@@ -32,7 +28,7 @@ Each row in the dataset represents a single poem and includes the following meta
   A label indicating the genre or format of the work (e.g., `"Prose"`, `"Verse"`, `"Visual"`).
 
 - **`poem_text`**  
-  The whitespace-preserved full text of the poem, extracted from HTML using [`resiliparse`](https://resiliparse.chatnoir.eu/en/stable/). Includes line breaks, indentation, non-breaking spaces, and other whitespace variants relevant to poetry.
+  The whitespace-preserved full text of the poem, extracted using [`resiliparse`](https://resiliparse.chatnoir.eu/en/stable/). Includes line breaks, indentation, non-breaking spaces, and other whitespace variants relevant to poetry.
 
 - **`poem_copyright_and_source`**  
   Copyright information and original publication/source metadata. Used to determine public domain status when combined with author death year and copyright year.
@@ -85,12 +81,10 @@ Each row in the dataset represents a single poem and includes the following meta
 
 We also share a [Google spreadsheet](https://docs.google.com/spreadsheets/d/1mr6J3EJKkhMU-u__WbzTftUzLuTgz9lhu5S4uGL7Lcs/edit?usp=sharing) version of this data.
 
-## Individual Poem Files in `.txt` and `.html` Formats
+## Individual Poem Files in `.txt` format
 
-In addition to the CSV dataset, we provide the individual poem files in two formatting-preserved versions:
+In addition to the CSV dataset, we provide the individual poem files in a formatting-preserved version:
 
-- **`poem_texts_resiliparse.zip`**: Contains 2,857 plain text files (`.txt`), one per poem, with whitespace and formatting preserved from the original HTMLs using [`resiliparse`](https://resiliparse.chatnoir.eu/en/stable/). These files attempt to maintain the original line breaks, indentation, and spacing from the Poetry Foundation website (look at WISP-Bench for more details).
+- **`poem_texts_resiliparse.zip`**: Contains 2,857 plain text files (`.txt`), one per poem, with whitespace and formatting preserved from original HTML using [`resiliparse`](https://resiliparse.chatnoir.eu/en/stable/). These files attempt to maintain the original line breaks, indentation, and spacing from the Poetry Foundation website (look at WISP-Bench for more details).
 
-- **`poem_htmls.zip`**: Contains 2,857 HTML files (`.html`), one per poem, preserving the original HTML structure and formatting from the Poetry Foundation website wherever possible. These files retain all typographic elements including text formatting, line breaks, indentation, em-spaces, and other HTML-encoded whitespace.
-
-Both versions correspond exactly to the poems listed in `public_domain_shortlist.txt` and provide researchers with access to the full formatting details that are crucial for analyzing poetic structure and whitespace usage.
+These files correspond exactly to the poems listed in `public_domain_shortlist.txt` and provide researchers with access to the full formatting details that are crucial for analyzing poetic structure and whitespace usage.
