@@ -39,9 +39,9 @@ The dashboard allows you to visualize and analyze how poets use whitespace as a 
 ## V. Citation
 
 This dataset supports the analysis in our paper:  
-> “so much depends / upon / a whitespace: Why Whitespace Matters for Poets and LLMs”
-> Sriharsh Bhyravajjula, Melanie Walsh, Anna Preus, Maria Antoniak
-> EMNLP 2025
+> “so much depends / upon / a whitespace: Why Whitespace Matters for Poets and LLMs”  
+> Sriharsh Bhyravajjula, Melanie Walsh, Anna Preus, Maria Antoniak  
+> EMNLP 2025  
 > [https://arxiv.org/abs/2510.16713](https://arxiv.org/abs/2510.16713)  
 ---
 
