@@ -19,7 +19,7 @@ To achieve this, we first set up the annotation task `wisp-label-classification.
 
 
 ```bash
-$ cd 3-wisp-bench/i-label-classification/
+$ cd 3-wisp-bench/ii-label-classification/
 $ prodigy wisp.classify wisp_multilabel \
     ../poem_images -F \
     ../prodigy-recipes/wisp-label-classification.py --remove-base64  # set up prodigy annotation server and annotate
@@ -39,7 +39,7 @@ For our benchmark, we set the minimum number of poems per label at 20, resulting
 
 ### Linearization Methods: Image -> Text w/ Multimodal LLM OCR
 
-We have mentioned the configuration parameters of `resiliparse`, `trafilatura`, and `justext` in the paper. These are HTML to text linearization methods. We also use the ground truth images of poems to generate text using multimodal LLM OCR capabilities.We use three different models: Gemini, Claude, and OpenAI. The code to run the OCR is in `2-wisp-bench/ii-wisp-bench/llm_ocr.py`, and uses the same prompt as mentioned in the appendix of our paper.
+We have mentioned the configuration parameters of `resiliparse`, `trafilatura`, and `justext` in the paper. These are HTML to text linearization methods. We also use the ground truth images of poems to generate text using multimodal LLM OCR capabilities.We use three different models: Gemini, Claude, and OpenAI. The code to run the OCR is in `2-wisp-bench/iii-wisp-bench/llm_ocr.py`, and uses the same prompt as mentioned in the appendix of our paper.
 
 
 #### Installation
@@ -91,10 +91,10 @@ For each of the 76 poems in our shortlist, we then set up the annotation task `w
 </p>
 
 ```bash
-$ cd 3-wisp-bench/ii-wisp-bench/
+$ cd 3-wisp-bench/iii-wisp-bench/
 $ prodigy wisp.multi_sublabel wisp_bench \
-    ../i-label_classification/wisp_mapping.json \
-    ../i-label_classification/shortlist.txt \
+    ../ii-label_classification/wisp_mapping.json \
+    ../ii-label_classification/shortlist.txt \
     ../poem_images \
     ./poem_texts \
     ./order.txt \
