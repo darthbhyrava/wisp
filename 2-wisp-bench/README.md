@@ -39,7 +39,7 @@ For our benchmark, we set the minimum number of poems per label at 20, resulting
 
 ### Linearization Methods: Image -> Text w/ Multimodal LLM OCR
 
-We have mentioned the configuration parameters of `resiliparse`, `trafilatura`, and `justext` in the paper. These are HTML to text linearization methods. We also use the ground truth images of poems to generate text using multimodal LLM OCR capabilities.We use three different models: Gemini, Claude, and OpenAI. The code to run the OCR is in `2-wisp-bench/iii-wisp-bench/llm_ocr.py`, and uses the same prompt as mentioned in the appendix of our paper.
+We have mentioned the configuration parameters of `resiliparse`, `trafilatura`, and `justext` in the paper. We include a script for HTML linearization to text in `2-wisp-bench/i-linearization-methods/html_to_txt.py`. We also use the ground truth images of poems to generate text using multimodal LLM OCR capabilities.We use three different models: Gemini, Claude, and OpenAI. The code to run the OCR is in `2-wisp-bench/i-linearization-methods/llm_ocr.py`, and uses the same prompt as mentioned in the appendix of our paper.
 
 
 #### Installation
