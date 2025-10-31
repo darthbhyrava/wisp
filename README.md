@@ -41,7 +41,20 @@ The dashboard allows you to visualize and analyze how poets use whitespace as a 
 This dataset supports the analysis in our paper:  
 > “so much depends / upon / a whitespace: Why Whitespace Matters for Poets and LLMs”  
 > Sriharsh Bhyravajjula, Melanie Walsh, Anna Preus, Maria Antoniak  
-> EMNLP 2025  
-> [https://arxiv.org/abs/2510.16713](https://arxiv.org/abs/2510.16713)  
+> EMNLP (Main) 2025  
+> Pre-print: [https://arxiv.org/abs/2510.16713](https://arxiv.org/abs/2510.16713)
+
+BibTeX:
+```bibtex
+@misc{bhyravajjula2025dependswhitespace,
+      title={so much depends / upon / a whitespace: Why Whitespace Matters for Poets and LLMs}, 
+      author={Sriharsh Bhyravajjula and Melanie Walsh and Anna Preus and Maria Antoniak},
+      year={2025},
+      eprint={2510.16713},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2510.16713}, 
+}
+```
 ---
 
